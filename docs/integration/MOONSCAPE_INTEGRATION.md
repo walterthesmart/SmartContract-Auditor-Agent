@@ -36,8 +36,8 @@ MoonScape Labs operates a platform that uses the HCS-10 protocol for AI agent co
 
 4. Ensure paths are correctly configured (using relative paths for portability):
    ```
-   SLITHER_CUSTOM_RULES=src/analyzer/rules/hedera_rules.py
-   REPORT_LOGO_PATH=assets/logo.png
+   SLITHER_CUSTOM_RULES=src/core/analyzer/hedera_rules.py
+   REPORT_LOGO_PATH=assets/images/logo.png
    ```
 
 ## Running the Integration

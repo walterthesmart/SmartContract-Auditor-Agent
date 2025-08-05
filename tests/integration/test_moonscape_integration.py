@@ -62,8 +62,8 @@ def mock_env_variables(monkeypatch):
     monkeypatch.setenv("HCS10_REGISTRY_TOPIC_ID", "0.0.54321")
     monkeypatch.setenv("HCS10_AGENT_NAME", "TestAuditAI")
     monkeypatch.setenv("HCS10_AGENT_DESCRIPTION", "Test description")
-    monkeypatch.setenv("SLITHER_CUSTOM_RULES", "src/analyzer/rules/hedera_rules.py")
-    monkeypatch.setenv("REPORT_LOGO_PATH", "assets/logo.png")
+    monkeypatch.setenv("SLITHER_CUSTOM_RULES", "src/core/analyzer/hedera_rules.py")
+    monkeypatch.setenv("REPORT_LOGO_PATH", "assets/images/logo.png")
 
 @pytest.fixture
 def mock_integrator():

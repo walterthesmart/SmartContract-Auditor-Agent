@@ -51,11 +51,11 @@ HEDERA_OPERATOR_ID=0.0.your_account_id
 HEDERA_OPERATOR_KEY=your_private_key_here
 
 # Slither Configuration
-SLITHER_CUSTOM_RULES=src/analyzer/hedera_rules.py
+SLITHER_CUSTOM_RULES=src/core/analyzer/hedera_rules.py
 SLITHER_TIMEOUT=300
 
 # Report Generation
-REPORT_LOGO_PATH=assets/logo.png
+REPORT_LOGO_PATH=assets/images/logo.png
 
 # HCS-10 Integration
 HCS10_REGISTRY_TOPIC_ID=0.0.your_topic_id
