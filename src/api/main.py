@@ -18,10 +18,10 @@ logger = logging.getLogger("hedera_audit_ai")
 
 # Load environment variables from .env file
 try:
-    # Get the backend directory (parent of the src directory)
-    backend_dir = Path(__file__).parent.parent.parent
-    env_path = backend_dir / ".env"
-    
+    # Get the project root directory (parent of the src directory)
+    project_root = Path(__file__).parent.parent.parent
+    env_path = project_root / "config" / ".env"
+
     if env_path.exists():
         logger.info(f"Loading environment variables from {env_path}")
         load_dotenv(dotenv_path=env_path)
