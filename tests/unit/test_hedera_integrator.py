@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 
-from src.hedera.integrator import HederaService
+from src.integrations.hedera.integrator import HederaService
 
 
 class TestHederaService:
