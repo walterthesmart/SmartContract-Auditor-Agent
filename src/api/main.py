@@ -57,6 +57,7 @@ from pydantic import BaseModel, Field
 from src.core.analyzer.slither_analyzer import SlitherAnalyzer
 from src.core.llm.processor import LLMProcessor
 from src.core.report.generator import ReportGenerator
+from src.api.routes.moonscape import router as moonscape_router
 
 # Optional imports for testing - these require Java/external dependencies
 try:
@@ -85,6 +86,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include MoonScape routes
+app.include_router(moonscape_router)
 
 
 # Pydantic models for request/response validation
