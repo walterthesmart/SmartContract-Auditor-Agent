@@ -19,7 +19,7 @@ from pathlib import Path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import the MoonScape integration module
-from moonscape_integration import MoonScapeIntegrator, AuditRequest
+from src.integrations.moonscape.moonscape_integration import MoonScapeIntegrator, AuditRequest
 
 # Load environment variables for testing
 load_dotenv()
