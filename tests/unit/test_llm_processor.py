@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 
-from src.llm.processor import LLMProcessor
+from src.core.llm.processor import LLMProcessor
 
 
 class TestLLMProcessor:
@@ -12,7 +12,7 @@ class TestLLMProcessor:
     @pytest.fixture
     def mock_groq_client(self):
         """Mock Groq client for testing."""
-        with patch("src.llm.processor.Groq") as mock_groq:
+        with patch("src.core.llm.processor.Groq") as mock_groq:
             mock_client = MagicMock()
             mock_groq.return_value = mock_client
             yield mock_client
