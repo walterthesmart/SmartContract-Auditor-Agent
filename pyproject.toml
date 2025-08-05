@@ -50,4 +50,7 @@ disallow_incomplete_defs = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
-python_paths = ["src"]
+pythonpath = ["src"]
+filterwarnings = [
+    "ignore::DeprecationWarning:pytest_freezegun.*",
+]
