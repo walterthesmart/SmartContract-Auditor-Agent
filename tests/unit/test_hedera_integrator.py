@@ -20,7 +20,7 @@ class TestHederaService:
     @pytest.fixture
     def mock_private_key(self):
         """Mock PrivateKey for testing."""
-        with patch("src.hedera.integrator.PrivateKey") as mock_key_class:
+        with patch("src.integrations.hedera.integrator.PrivateKey") as mock_key_class:
             mock_key = MagicMock()
             mock_key_class.fromString.return_value = mock_key
             yield mock_key
