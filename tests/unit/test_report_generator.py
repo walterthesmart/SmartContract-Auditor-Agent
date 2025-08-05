@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 
-from src.report.generator import ReportGenerator, CodeSnippet
+from src.core.report.generator import ReportGenerator, CodeSnippet
 
 
 class TestReportGenerator:

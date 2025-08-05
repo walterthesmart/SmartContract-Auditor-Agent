@@ -3,9 +3,9 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hedera_audit_ai"
-version = "0.1.0"
-description = "AI-powered auditing tool for Hedera smart contracts"
+name = "smart_contract_auditor_agent"
+version = "0.2.0"
+description = "AI-powered auditing tool for Hedera smart contracts with HCS-10 OpenConvAI support"
 readme = "README.md"
 authors = [
     {name = "Hedera Audit AI Team"}
@@ -50,3 +50,4 @@ disallow_incomplete_defs = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
+python_paths = ["src"]
