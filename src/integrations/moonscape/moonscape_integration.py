@@ -110,9 +110,9 @@ class MoonScapeIntegrator:
     def _init_audit_service(self):
         """Initialize the audit service."""
         try:
-            from src.analyzer.slither_analyzer import SlitherAnalyzer
-            from src.llm.processor import LLMProcessor
-            from src.report.generator import ReportGenerator
+            from src.core.analyzer.slither_analyzer import SlitherAnalyzer
+            from src.core.llm.processor import LLMProcessor
+            from src.core.report.generator import ReportGenerator
             
             # Initialize SlitherAnalyzer
             custom_rules_path = os.getenv("SLITHER_CUSTOM_RULES")

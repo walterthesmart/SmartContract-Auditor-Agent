@@ -15,7 +15,8 @@ from hedera import (
 
 def create_hcs_topic():
     # Load environment variables from .env file
-    load_dotenv("backend/.env")
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    load_dotenv(os.path.join(project_root, "config", ".env"))
     
     # Get Hedera credentials from environment variables
     operator_id = os.getenv("HEDERA_OPERATOR_ID")
