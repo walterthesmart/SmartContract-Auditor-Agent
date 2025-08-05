@@ -54,7 +54,7 @@ class MoonScapeIntegrator:
     def _init_hedera_service(self):
         """Initialize the Hedera service."""
         try:
-            from src.hedera.integrator import HederaService
+            from src.integrations.hedera.integrator import HederaService
             
             # Get Hedera credentials from environment variables
             operator_id = os.getenv("HEDERA_OPERATOR_ID")
@@ -80,7 +80,7 @@ class MoonScapeIntegrator:
     def _init_hcs10_agent(self):
         """Initialize the HCS-10 agent."""
         try:
-            from src.hedera.hcs10_agent import HCS10Agent
+            from src.integrations.hcs10.hcs10_agent import HCS10Agent
             
             # Get configuration from environment variables
             registry_topic_id = os.getenv("HCS10_REGISTRY_TOPIC_ID")
@@ -384,4 +384,10 @@ def main():
         
     except Exception as e:
         print(f"❌ Error in MoonScape integration: {e}")
-  
+        return 1
+    
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
