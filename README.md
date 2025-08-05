@@ -1,240 +1,163 @@
 # Smart Contract Auditor Agent
 
-## Overview
+An AI-powered auditing tool for Hedera smart contracts with HCS-10 OpenConvAI support and MoonScape platform integration.
 
-The Smart Contract Auditor Agent is an AI-powered auditing tool for Hedera smart contracts that provides vulnerability detection, automated suggestions, plain-English reports, and NFT audit certificates. It supports the HCS-10 OpenConvAI standard for decentralized AI agent communication and integrates with the MoonScape platform.
+## 🌟 Features
 
-This system implements:
+- **Smart Contract Analysis**: Static analysis using Slither with custom Hedera rules
+- **AI-Powered Explanations**: LLM-based vulnerability explanations and fix suggestions
+- **Report Generation**: Professional PDF audit reports
+- **Hedera Integration**: File storage and NFT certificate minting
+- **HCS-10 OpenConvAI**: Decentralized AI agent communication protocol
+- **MoonScape Platform**: Integration with MoonScape ecosystem
 
-- **Static Analysis Engine**: Integrates Slither with custom Hedera rules
-- **LLM Processing**: Uses LLaMA 3 (via Groq) for vulnerability explanations and fix suggestions
-- **Audit Report Generation**: Creates professional PDF reports
-- **Hedera Integration**: Stores reports on Hedera File Service and mints NFT certificates
-- **HCS-10 OpenConvAI**: Implements the standard for decentralized AI agent communication
+## 🌙 **Deploy to MoonScape - Quick Start**
 
-## HCS-10 Integration Status
+### **Prerequisites**
+- Python 3.10+
+- Node.js 16+
+- Hedera account with HBAR balance (minimum 50 HBAR)
+- Groq API key for LLM processing
 
-The Smart Contract Auditor Agent has been successfully integrated with the HCS-10 OpenConvAI standard. The following components have been deployed and configured:
+### **1. Setup Environment**
 
-1. **Registry Topic**: Created on Hedera testnet
-   - Topic ID: `0.0.6359793`
-   - Purpose: Serves as the registry for HCS-10 agents
+```bash
+# Clone and navigate to project
+git clone <repository_url>
+cd Smart-Contract-Auditor-Agent
 
-2. **AuditRegistry Smart Contract**: Deployed on Hedera testnet
-   - Contract ID: `0.0.6359980`
-   - Purpose: Manages audit registrations, approvals, and NFT minting
+# Install dependencies
+npm install
+pip install -r requirements.txt
 
-3. **Environment Configuration**: Updated in `config/.env`
-   - HCS10_REGISTRY_TOPIC_ID=0.0.6359793
-   - HCS10_AGENT_NAME=HederaAuditAI
-   - HCS10_AGENT_DESCRIPTION=AI-powered auditing tool for Hedera smart contracts
-   - AUDIT_REGISTRY_CONTRACT_ID=0.0.6359980
+# Copy environment template
+cp config/.env.example config/.env
+```
 
-For detailed instructions on using the HCS-10 integration, see the [credential guide](docs/integration/credential_guide.md).
+### **2. Configure Environment Variables**
 
-### Using the HCS-10 Agent in Your Application
+Edit `config/.env` with your credentials:
 
-To use the HCS-10 agent in your application, follow these steps:
+```bash
+# Hedera Network Configuration
+HEDERA_NETWORK=testnet
+HEDERA_OPERATOR_ID=0.0.your_account_id
+HEDERA_OPERATOR_KEY=your_private_key_here
 
+# LLM Configuration
+GROQ_API_KEY=your_groq_api_key_here
+GROQ_MODEL=llama3-70b-8192
+
+# MoonScape Integration (Optional - get from MoonScape Labs)
+MOONSCAPE_API_KEY=your_moonscape_api_key_here
+MOONSCAPE_API_BASE=https://api.hashgraphonline.com
+
+# HCS-10 Configuration (Pre-configured)
+HCS10_REGISTRY_TOPIC_ID=0.0.6359793
+HCS10_AGENT_NAME=HederaAuditAI
+HCS10_AGENT_DESCRIPTION=AI-powered auditing tool for Hedera smart contracts
+```
+
+### **3. Deploy to MoonScape**
+
+**Option A: Automated Deployment (Recommended)**
+```bash
+# Windows
+deploy_to_moonscape.bat
+
+# Linux/Mac
+./deploy_to_moonscape.sh
+```
+
+**Option B: Manual Deployment**
+```bash
+# 1. Check readiness
+python scripts/setup/check_deployment_readiness.py
+
+# 2. Deploy contract
+node scripts/setup/deploy_audit_registry.js
+
+# 3. Start MoonScape integration
+python src/integrations/moonscape/moonscape_integration.py
+
+# 4. Start API server
+python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000
+```
+
+### **4. Verify Deployment**
+
+- **Contract**: Visit https://hashscan.io/testnet and search for your contract ID
+- **API**: Check http://localhost:8000/health
+- **Documentation**: Visit http://localhost:8000/docs
+
+## 📊 What Gets Deployed
+
+✅ **AuditRegistry Smart Contract** - Manages audit registrations and NFT certificates
+✅ **HCS-10 Agent Registration** - Your AI auditor becomes discoverable on MoonScape
+✅ **Topic Communication** - Real-time audit request handling via HCS topics
+✅ **API Backend** - RESTful API for contract analysis and reporting
+✅ **File Storage** - Audit reports stored on Hedera File Service
+
+## 🚀 Usage After Deployment
+
+### **API Endpoints**
+- `POST /analyze` - Analyze smart contract code
+- `POST /generate-report` - Generate PDF audit report
+- `GET /health` - Health check endpoint
+- `POST /upload-contract` - Upload contract file for analysis
+
+### **Example Usage**
 ```python
-from src.integrations.hcs10.hcs10_agent import HCS10Agent
-from src.integrations.hedera.integrator import HederaService
+import requests
 
-# Initialize the Hedera service
-hedera_service = HederaService(
-    operator_id=os.getenv("HEDERA_OPERATOR_ID"),
-    operator_key=os.getenv("HEDERA_OPERATOR_KEY"),
-    network="testnet"
-)
+# Analyze a smart contract
+response = requests.post("http://localhost:8000/analyze", json={
+    "contract_code": "pragma solidity ^0.8.0; contract Example { ... }",
+    "contract_metadata": {
+        "name": "ExampleContract",
+        "language": "solidity"
+    }
+})
 
-# Initialize the agent (note: this may take some time due to network calls)
-try:
-    agent = HCS10Agent(
-        hedera_service=hedera_service,
-        registry_topic_id=os.getenv("HCS10_REGISTRY_TOPIC_ID"),
-        agent_name=os.getenv("HCS10_AGENT_NAME"),
-        agent_description=os.getenv("HCS10_AGENT_DESCRIPTION")
-    )
-    
-    # Create a connection with another account
-    connection = agent.create_connection("0.0.XXXXX")  # Replace with target account ID
-    
-    # Send an audit request
-    contract_code = "..."  # Smart contract code
-    contract_metadata = {"name": "MyContract", "version": "1.0.0"}
-    agent.send_audit_request(connection["id"], contract_code, contract_metadata)
-    
-    # Later, send audit results
-    audit_result = {"status": "passed", "findings": []}
-    file_id = "0.0.YYYYY"  # Hedera File ID of the audit report
-    agent.send_audit_result(connection["id"], audit_result, file_id)
-    
-except Exception as e:
-    print(f"Error initializing HCS-10 agent: {e}")
+audit_results = response.json()
 ```
 
-**Note**: The agent initialization involves several network calls to the Hedera network and may take some time to complete. Consider implementing retry logic or increasing timeouts for production use.
+### **MoonScape Integration Features**
+- 🔗 **Agent Discovery**: Your auditor appears in MoonScape's agent registry
+- 📡 **Request Handling**: Automatically processes audit requests from MoonScape users
+- 🤖 **AI Analysis**: Provides intelligent vulnerability detection and explanations
+- 📊 **Report Generation**: Creates professional PDF audit reports
+- 🎯 **NFT Certificates**: Mints NFTs for successfully audited contracts
 
-## Architecture
-
-```
-smart-contract-auditor-agent/
-├── src/                      # Source code
-│   ├── core/                 # Core auditing functionality
-│   │   ├── analyzer/         # Static analysis engine
-│   │   ├── llm/              # LLM processing
-│   │   ├── report/           # Report generation
-│   │   └── models/           # Data models and schemas
-│   ├── integrations/         # External integrations
-│   │   ├── hedera/           # Hedera blockchain integration
-│   │   ├── hcs10/            # HCS-10 OpenConvAI protocol
-│   │   └── moonscape/        # MoonScape platform integration
-│   ├── api/                  # REST API layer
-│   │   ├── routes/           # API route definitions
-│   │   └── middleware/       # API middleware
-│   └── utils/                # Shared utilities
-├── tests/                    # Test suite
-│   ├── unit/                 # Unit tests
-│   ├── integration/          # Integration tests
-│   └── fixtures/             # Test data and fixtures
-├── scripts/                  # Utility and deployment scripts
-│   ├── setup/                # Setup and initialization
-│   ├── demo/                 # Demo and example scripts
-│   └── deployment/           # Deployment utilities
-├── contracts/                # Smart contracts
-│   ├── solidity/             # Solidity contracts
-│   └── vyper/                # Vyper contracts
-├── docs/                     # Documentation
-│   ├── api/                  # API documentation
-│   ├── integration/          # Integration guides
-│   ├── deployment/           # Deployment documentation
-│   └── development/          # Development guides
-├── config/                   # Configuration files
-│   ├── docker/               # Docker configurations
-│   └── logging/              # Logging configurations
-├── assets/                   # Static assets
-│   ├── images/               # Images and logos
-│   └── templates/            # Report templates
-├── pyproject.toml            # Project configuration
-├── requirements.txt          # Dependencies
-└── package.json              # Node.js dependencies for Hedera SDK
-```
-
-## Features
-
-- **Smart Contract Analysis**: Scan Solidity/Vyper contracts for vulnerabilities
-- **AI-Powered Explanations**: Get plain-English descriptions of issues
-- **Automated Fix Suggestions**: Receive code fixes with inline comments
-- **Test Case Generation**: Get example test cases to verify fixes
-- **PDF Report Generation**: Generate comprehensive audit reports
-- **Hedera Integration**: Store reports on Hedera and mint NFT certificates
-- **HCS-10 OpenConvAI**: Decentralized AI agent communication
-  - Agent identity and discovery
-  - Secure communication channels
-  - Approval-required transactions
-
-## Installation
-
-### Prerequisites
-
-- Python 3.8+
-- Slither and its dependencies
-- Access to Groq API (for LLaMA 3)
-- Hedera account credentials
-
-### Setup
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/Smart-Contract-Auditor-Agent.git
-   cd Smart-Contract-Auditor-Agent
-   ```
-
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. Install the package in development mode:
-   ```bash
-   pip install -e ".[dev]"
-   ```
-
-4. Create a `.env` file in the `config/` directory with your credentials (see `config/.env.example` for a template):
-   ```
-   # Groq API (for Llama 3)
-   GROQ_API_KEY=your_groq_api_key_here
-   GROQ_MODEL=llama3-70b-8192
-
-   # Hedera Network
-   HEDERA_NETWORK=testnet
-   HEDERA_OPERATOR_ID=0.0.1234
-   HEDERA_OPERATOR_KEY=your_private_key_here
-
-   # HCS-10 OpenConvAI Configuration
-   HCS10_REGISTRY_TOPIC_ID=0.0.123456  # Optional, for agent registration
-   HCS10_AGENT_NAME=HederaAuditAI
-   HCS10_AGENT_DESCRIPTION=AI-powered auditing tool for Hedera smart contracts
-   ```
-
-## Usage
-
-### Running the API Server
+## 🧪 Testing
 
 ```bash
-uvicorn src.api.main:app --reload
+# Run all tests
+pytest tests/
+
+# Test MoonScape integration specifically
+python scripts/demo/api_demo.py
+
+# Check deployment readiness
+python scripts/setup/check_deployment_readiness.py
 ```
 
-The API will be available at http://localhost:8000
+## 📚 Documentation
 
-### API Endpoints
+- **[MoonScape Integration Guide](docs/integration/MOONSCAPE_INTEGRATION.md)** - Complete integration details
+- **[MoonScape Deployment Guide](docs/deployment/MOONSCAPE_DEPLOYMENT.md)** - Step-by-step deployment
 
-#### Core Auditing Endpoints
-- `POST /analyze`: Submit a smart contract for analysis
-- `POST /generate-report`: Generate audit reports
-- `POST /upload-contract`: Upload a contract file for analysis
+## 🆘 Support
 
-#### HCS-10 OpenConvAI Endpoints
-- `GET /hcs10/topics`: Get agent topic IDs
-- `POST /hcs10/connections`: Create a connection with another account
-- `POST /hcs10/audit-request`: Send an audit request through HCS-10
-- `POST /hcs10/audit-result`: Send audit results through HCS-10
-- `POST /hcs10/request-approval`: Request approval for NFT minting
+- **Hedera**: https://docs.hedera.com
+- **MoonScape**: support@hashgraphonline.com
+- **Issues**: Create an issue in this repository
 
-## Development
+## 🔮 Current Status
 
-### Running Tests
+### ✅ **Pre-Deployed Components**
+- **HCS-10 Registry Topic**: `0.0.6359793` (Active on testnet)
+- **Sample Contract**: `0.0.6359980` (Reference implementation)
 
-```bash
-pytest
-```
-
-### Code Quality
-
-```bash
-# Format code
-black src tests
-
-# Sort imports
-isort src tests
-
-# Type checking
-mypy src
-
-# Linting
-flake8 src tests
-```
-
-## Docker
-
-Build and run the Docker container:
-
-```bash
-docker build -f config/docker/Dockerfile -t smart-contract-auditor-agent .
-docker run -p 8000:8000 -e GROQ_API_KEY=your_key smart-contract-auditor-agent
-```
-
-## License
-
-MIT
+### 🎯 **Ready for Production**
+Your deployment will create a new AuditRegistry contract and register it with MoonScape for immediate use!
