@@ -1,10 +1,10 @@
-# HederaAuditAI Backend
+# Smart Contract Auditor Agent
 
 ## Overview
 
-HederaAuditAI is an AI-powered auditing tool for Hedera smart contracts that provides vulnerability detection, automated suggestions, plain-English reports, and NFT audit certificates. It now supports the HCS-10 OpenConvAI standard for decentralized AI agent communication.
+The Smart Contract Auditor Agent is an AI-powered auditing tool for Hedera smart contracts that provides vulnerability detection, automated suggestions, plain-English reports, and NFT audit certificates. It supports the HCS-10 OpenConvAI standard for decentralized AI agent communication and integrates with the MoonScape platform.
 
-This backend system implements:
+This system implements:
 
 - **Static Analysis Engine**: Integrates Slither with custom Hedera rules
 - **LLM Processing**: Uses LLaMA 3 (via Groq) for vulnerability explanations and fix suggestions
@@ -14,7 +14,7 @@ This backend system implements:
 
 ## HCS-10 Integration Status
 
-The HederaAuditAI backend has been successfully integrated with the HCS-10 OpenConvAI standard. The following components have been deployed and configured:
+The Smart Contract Auditor Agent has been successfully integrated with the HCS-10 OpenConvAI standard. The following components have been deployed and configured:
 
 1. **Registry Topic**: Created on Hedera testnet
    - Topic ID: `0.0.6359793`
@@ -24,21 +24,21 @@ The HederaAuditAI backend has been successfully integrated with the HCS-10 OpenC
    - Contract ID: `0.0.6359980`
    - Purpose: Manages audit registrations, approvals, and NFT minting
 
-3. **Environment Configuration**: Updated in `.env`
+3. **Environment Configuration**: Updated in `config/.env`
    - HCS10_REGISTRY_TOPIC_ID=0.0.6359793
    - HCS10_AGENT_NAME=HederaAuditAI
    - HCS10_AGENT_DESCRIPTION=AI-powered auditing tool for Hedera smart contracts
    - AUDIT_REGISTRY_CONTRACT_ID=0.0.6359980
 
-For detailed instructions on using the HCS-10 integration, see the [credential guide](docs/credential_guide.md).
+For detailed instructions on using the HCS-10 integration, see the [credential guide](docs/integration/credential_guide.md).
 
 ### Using the HCS-10 Agent in Your Application
 
 To use the HCS-10 agent in your application, follow these steps:
 
 ```python
-from src.hedera.hcs10_agent import HCS10Agent
-from src.hedera.integrator import HederaService
+from src.integrations.hcs10.hcs10_agent import HCS10Agent
+from src.integrations.hedera.integrator import HederaService
 
 # Initialize the Hedera service
 hedera_service = HederaService(
@@ -78,21 +78,46 @@ except Exception as e:
 ## Architecture
 
 ```
-backend/
+smart-contract-auditor-agent/
 ├── src/                      # Source code
-│   ├── analyzer/             # Static analysis module
-│   ├── llm/                  # LLM processing module
-│   ├── report/               # Report generation module
-│   ├── hedera/               # Hedera integration module
-│   │   ├── integrator.py     # Core Hedera services
-│   │   └── hcs10_agent.py    # HCS-10 OpenConvAI agent
-│   └── api/                  # API endpoints
+│   ├── core/                 # Core auditing functionality
+│   │   ├── analyzer/         # Static analysis engine
+│   │   ├── llm/              # LLM processing
+│   │   ├── report/           # Report generation
+│   │   └── models/           # Data models and schemas
+│   ├── integrations/         # External integrations
+│   │   ├── hedera/           # Hedera blockchain integration
+│   │   ├── hcs10/            # HCS-10 OpenConvAI protocol
+│   │   └── moonscape/        # MoonScape platform integration
+│   ├── api/                  # REST API layer
+│   │   ├── routes/           # API route definitions
+│   │   └── middleware/       # API middleware
+│   └── utils/                # Shared utilities
 ├── tests/                    # Test suite
+│   ├── unit/                 # Unit tests
+│   ├── integration/          # Integration tests
+│   └── fixtures/             # Test data and fixtures
+├── scripts/                  # Utility and deployment scripts
+│   ├── setup/                # Setup and initialization
+│   ├── demo/                 # Demo and example scripts
+│   └── deployment/           # Deployment utilities
+├── contracts/                # Smart contracts
+│   ├── solidity/             # Solidity contracts
+│   └── vyper/                # Vyper contracts
 ├── docs/                     # Documentation
+│   ├── api/                  # API documentation
+│   ├── integration/          # Integration guides
+│   ├── deployment/           # Deployment documentation
+│   └── development/          # Development guides
+├── config/                   # Configuration files
+│   ├── docker/               # Docker configurations
+│   └── logging/              # Logging configurations
+├── assets/                   # Static assets
+│   ├── images/               # Images and logos
+│   └── templates/            # Report templates
 ├── pyproject.toml            # Project configuration
-├── setup.py                  # Package setup
 ├── requirements.txt          # Dependencies
-└── Dockerfile                # Containerization
+└── package.json              # Node.js dependencies for Hedera SDK
 ```
 
 ## Features
@@ -121,8 +146,8 @@ backend/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/HederaAuditAI.git
-   cd HederaAuditAI/backend
+   git clone https://github.com/yourusername/Smart-Contract-Auditor-Agent.git
+   cd Smart-Contract-Auditor-Agent
    ```
 
 2. Create and activate a virtual environment:
@@ -136,7 +161,7 @@ backend/
    pip install -e ".[dev]"
    ```
 
-4. Create a `.env` file with your credentials (see `.env.example` for a template):
+4. Create a `.env` file in the `config/` directory with your credentials (see `config/.env.example` for a template):
    ```
    # Groq API (for Llama 3)
    GROQ_API_KEY=your_groq_api_key_here
@@ -146,7 +171,7 @@ backend/
    HEDERA_NETWORK=testnet
    HEDERA_OPERATOR_ID=0.0.1234
    HEDERA_OPERATOR_KEY=your_private_key_here
-   
+
    # HCS-10 OpenConvAI Configuration
    HCS10_REGISTRY_TOPIC_ID=0.0.123456  # Optional, for agent registration
    HCS10_AGENT_NAME=HederaAuditAI
