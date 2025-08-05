@@ -57,8 +57,17 @@ from pydantic import BaseModel, Field
 from src.core.analyzer.slither_analyzer import SlitherAnalyzer
 from src.core.llm.processor import LLMProcessor
 from src.core.report.generator import ReportGenerator
-from src.integrations.hedera.integrator import HederaService
-from src.integrations.hcs10.hcs10_agent import HCS10Agent
+
+# Optional imports for testing - these require Java/external dependencies
+try:
+    from src.integrations.hedera.integrator import HederaService
+    from src.integrations.hcs10.hcs10_agent import HCS10Agent
+    HEDERA_AVAILABLE = True
+except Exception as e:
+    logger.warning(f"Hedera integration not available: {e}")
+    HederaService = None
+    HCS10Agent = None
+    HEDERA_AVAILABLE = False
 
 
 # Initialize FastAPI app
@@ -213,11 +222,24 @@ def get_report_generator() -> ReportGenerator:
     return ReportGenerator(logo_path=logo_path)
 
 
-def get_hedera_service() -> HederaService:
+def get_hedera_service():
     """Get HederaService instance."""
+    if not HEDERA_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail="Hedera integration not available"
+        )
+
     network = os.getenv("HEDERA_NETWORK", "testnet")
     operator_id = os.getenv("HEDERA_OPERATOR_ID")
     operator_key = os.getenv("HEDERA_OPERATOR_KEY")
+
+    if not operator_id or not operator_key:
+        raise HTTPException(
+            status_code=500,
+            detail="Hedera credentials not configured"
+        )
+
     return HederaService(network=network, operator_id=operator_id, operator_key=operator_key)
 
 
@@ -249,7 +271,7 @@ def retry(max_attempts=3, delay=2):
         return wrapper
     return decorator
 
-def get_hcs10_agent() -> HCS10Agent:
+def get_hcs10_agent():
     """Get or create a singleton HCS10Agent instance."""
     global _hcs10_agent
     
@@ -379,7 +401,7 @@ async def analyze_contract(
 async def generate_report(
     request: ReportRequest,
     report_generator: ReportGenerator = Depends(get_report_generator),
-    hedera_service: HederaService = Depends(get_hedera_service),
+    hedera_service = Depends(get_hedera_service),
 ):
     """
     Generate an audit report and store it on Hedera.
@@ -470,7 +492,7 @@ async def health_check():
 
 # HCS-10 OpenConvAI Endpoints
 @app.get("/hcs10/topics", response_model=AgentTopicsResponse)
-async def get_agent_topics(agent: HCS10Agent = Depends(get_hcs10_agent)):
+async def get_agent_topics(agent = Depends(get_hcs10_agent)):
     """Get agent topics."""
     return {
         "inbound_topic_id": agent.inbound_topic_id,
@@ -480,7 +502,7 @@ async def get_agent_topics(agent: HCS10Agent = Depends(get_hcs10_agent)):
 
 
 @app.post("/hcs10/connections", response_model=ConnectionResponse)
-async def create_connection(request: ConnectionRequest, agent: HCS10Agent = Depends(get_hcs10_agent)):
+async def create_connection(request: ConnectionRequest, agent = Depends(get_hcs10_agent)):
     """Create a connection with another account."""
     try:
         connection = agent.create_connection(request.account_id)
@@ -493,7 +515,7 @@ async def create_connection(request: ConnectionRequest, agent: HCS10Agent = Depe
 async def send_audit_request(
     request: AuditRequestHCS10,
     background_tasks: BackgroundTasks,
-    agent: HCS10Agent = Depends(get_hcs10_agent),
+    agent = Depends(get_hcs10_agent),
     analyzer: SlitherAnalyzer = Depends(get_analyzer),
     llm_processor: LLMProcessor = Depends(get_llm_processor)
 ):
@@ -531,7 +553,7 @@ async def send_audit_request(
 
 
 @app.post("/hcs10/audit-result")
-async def send_audit_result(request: AuditResultHCS10, agent: HCS10Agent = Depends(get_hcs10_agent)):
+async def send_audit_result(request: AuditResultHCS10, agent = Depends(get_hcs10_agent)):
     """Send audit results through HCS-10."""
     try:
         tx_id = agent.send_audit_result(
@@ -548,7 +570,7 @@ async def send_audit_result(request: AuditResultHCS10, agent: HCS10Agent = Depen
 
 
 @app.post("/hcs10/request-approval")
-async def request_nft_approval(request: ApprovalRequest, agent: HCS10Agent = Depends(get_hcs10_agent)):
+async def request_nft_approval(request: ApprovalRequest, agent = Depends(get_hcs10_agent)):
     """Request approval for NFT minting."""
     try:
         schedule_id = agent.request_nft_approval(
@@ -564,7 +586,7 @@ async def request_nft_approval(request: ApprovalRequest, agent: HCS10Agent = Dep
 
 
 async def process_audit_request(
-    agent: HCS10Agent,
+    agent,
     connection_id: int,
     contract_code: str,
     contract_metadata: Dict,

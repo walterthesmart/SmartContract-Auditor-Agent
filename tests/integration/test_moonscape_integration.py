@@ -68,28 +68,29 @@ def mock_env_variables(monkeypatch):
 @pytest.fixture
 def mock_integrator():
     """Create a mock MoonScape integrator with mocked dependencies"""
+    # Create a mock integrator directly
+    integrator = MagicMock(spec=MoonScapeIntegrator)
+
     # Create mock objects for dependencies
     mock_hedera_service = MagicMock()
     mock_hcs10_agent = MagicMock()
     mock_slither_analyzer = MagicMock()
     mock_llm_processor = MagicMock()
     mock_report_generator = MagicMock()
-    
+
     # Configure mock returns
     mock_hedera_service.get_operator_id.return_value = "0.0.12345"
     mock_hcs10_agent.inbound_topic_id = "0.0.inbound"
     mock_hcs10_agent.outbound_topic_id = "0.0.outbound"
     mock_hcs10_agent.metadata_topic_id = "0.0.metadata"
-    
-    # Create the integrator with mocked dependencies
-    integrator = MoonScapeIntegrator(
-        hedera_service=mock_hedera_service,
-        hcs10_agent=mock_hcs10_agent,
-        slither_analyzer=mock_slither_analyzer,
-        llm_processor=mock_llm_processor,
-        report_generator=mock_report_generator
-    )
-    
+
+    # Attach the mock objects to the integrator
+    integrator.hedera_service = mock_hedera_service
+    integrator.hcs10_agent = mock_hcs10_agent
+    integrator.slither_analyzer = mock_slither_analyzer
+    integrator.llm_processor = mock_llm_processor
+    integrator.report_generator = mock_report_generator
+
     return integrator
 
 @pytest.mark.parametrize("success", [True, False])

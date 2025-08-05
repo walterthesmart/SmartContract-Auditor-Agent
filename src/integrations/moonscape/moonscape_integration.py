@@ -14,6 +14,7 @@ import requests
 from typing import Dict, Any, Optional
 from dotenv import load_dotenv
 from pathlib import Path
+from dataclasses import dataclass
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -31,6 +32,16 @@ MOONSCAPE_API_BASE = os.getenv("MOONSCAPE_API_BASE", "https://api.hashgraphonlin
 MOONSCAPE_AGENT_REGISTRY_ENDPOINT = f"{MOONSCAPE_API_BASE}/hcs10/registry"
 MOONSCAPE_AGENT_CONNECTION_ENDPOINT = f"{MOONSCAPE_API_BASE}/hcs10/connect"
 MOONSCAPE_AUDIT_ENDPOINT = f"{MOONSCAPE_API_BASE}/audit"
+
+
+@dataclass
+class AuditRequest:
+    """Represents an audit request from MoonScape platform."""
+    request_id: str
+    contract_code: str
+    contract_name: str
+    language: str
+    metadata: Optional[Dict[str, Any]] = None
 
 class MoonScapeIntegrator:
     """

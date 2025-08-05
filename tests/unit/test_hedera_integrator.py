@@ -1,9 +1,26 @@
 """Tests for the Hedera integration module."""
 
 import pytest
+import sys
 from unittest.mock import patch, MagicMock
 
-from src.integrations.hedera.integrator import HederaService
+# Mock the hedera module to avoid Java dependency issues
+with patch.dict('sys.modules', {
+    'hedera': MagicMock(),
+    'hedera.Client': MagicMock(),
+    'hedera.PrivateKey': MagicMock(),
+    'hedera.AccountId': MagicMock(),
+    'hedera.TopicCreateTransaction': MagicMock(),
+    'hedera.TopicMessageSubmitTransaction': MagicMock(),
+    'hedera.FileCreateTransaction': MagicMock(),
+    'hedera.ContractCreateTransaction': MagicMock(),
+    'hedera.TokenMintTransaction': MagicMock(),
+    'hedera.TokenCreateTransaction': MagicMock(),
+    'hedera.TokenType': MagicMock(),
+    'hedera.TokenSupplyType': MagicMock(),
+    'hedera.Hbar': MagicMock(),
+}):
+    from src.integrations.hedera.integrator import HederaService
 
 
 class TestHederaService:

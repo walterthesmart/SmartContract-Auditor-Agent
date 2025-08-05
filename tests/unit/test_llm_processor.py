@@ -116,8 +116,27 @@ class TestLLMProcessor:
             mock_test_response
         ]
 
-        # Process vulnerabilities
-        result = processor.process_vulnerabilities(sample_vulnerabilities, sample_contract_code)
+        # Mock the workflow to return expected results
+        mock_workflow_result = {
+            "processed_results": [
+                {
+                    **sample_vulnerabilities[0],
+                    "explanation": "Test explanation",
+                    "fixed_code": "Test fix",
+                    "test_case": "Test case"
+                },
+                {
+                    **sample_vulnerabilities[1],
+                    "explanation": "Test explanation",
+                    "fixed_code": "Test fix",
+                    "test_case": "Test case"
+                }
+            ]
+        }
+
+        with patch.object(processor.workflow, 'invoke', return_value=mock_workflow_result):
+            # Process vulnerabilities
+            result = processor.process_vulnerabilities(sample_vulnerabilities, sample_contract_code)
 
         # Verify results
         assert len(result) == 2

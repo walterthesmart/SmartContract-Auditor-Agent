@@ -64,10 +64,10 @@ class TestReportGenerator:
         assert "Heading3" in report_generator.styles
         assert "Normal" in report_generator.styles
         assert "Code" in report_generator.styles
-        assert "Footer" in report_generator.styles
+        assert "CustomFooter" in report_generator.styles
 
-    @patch("src.report.generator.SimpleDocTemplate")
-    @patch("src.report.generator.io.BytesIO")
+    @patch("src.core.report.generator.SimpleDocTemplate")
+    @patch("src.core.report.generator.io.BytesIO")
     def test_generate_pdf(self, mock_bytesio, mock_simple_doc, report_generator, sample_audit_data):
         """Test PDF generation."""
         # Mock BytesIO
@@ -87,7 +87,7 @@ class TestReportGenerator:
         assert mock_doc.build.called
         mock_buffer.close.assert_called_once()
 
-    @patch("src.report.generator.Paragraph")
+    @patch("src.core.report.generator.Paragraph")
     def test_add_header(self, mock_paragraph, report_generator, sample_audit_data):
         """Test adding header to report."""
         elements = []
@@ -97,8 +97,8 @@ class TestReportGenerator:
         assert len(elements) > 0
         assert mock_paragraph.call_count >= 3  # Title, contract name, date
 
-    @patch("src.report.generator.Paragraph")
-    @patch("src.report.generator.Table")
+    @patch("src.core.report.generator.Paragraph")
+    @patch("src.core.report.generator.Table")
     def test_add_summary(self, mock_table, mock_paragraph, report_generator, sample_audit_data):
         """Test adding summary to report."""
         elements = []
@@ -109,8 +109,8 @@ class TestReportGenerator:
         assert mock_paragraph.call_count >= 1
         assert mock_table.call_count >= 1
 
-    @patch("src.report.generator.Paragraph")
-    @patch("src.report.generator.Table")
+    @patch("src.core.report.generator.Paragraph")
+    @patch("src.core.report.generator.Table")
     def test_add_vulnerability_table(self, mock_table, mock_paragraph, report_generator, sample_audit_data):
         """Test adding vulnerability table to report."""
         elements = []
@@ -121,8 +121,8 @@ class TestReportGenerator:
         assert mock_paragraph.call_count >= 1
         assert mock_table.call_count >= 1
 
-    @patch("src.report.generator.Paragraph")
-    @patch("src.report.generator.PageBreak")
+    @patch("src.core.report.generator.Paragraph")
+    @patch("src.core.report.generator.PageBreak")
     def test_add_detailed_findings(self, mock_page_break, mock_paragraph, report_generator, sample_audit_data):
         """Test adding detailed findings to report."""
         elements = []
@@ -133,7 +133,7 @@ class TestReportGenerator:
         assert mock_paragraph.call_count >= len(sample_audit_data["vulnerabilities"]) * 3  # At least 3 paragraphs per vulnerability
         assert mock_page_break.call_count >= len(sample_audit_data["vulnerabilities"]) - 1  # Page break between vulnerabilities
 
-    @patch("src.report.generator.Paragraph")
+    @patch("src.core.report.generator.Paragraph")
     def test_add_footer(self, mock_paragraph, report_generator, sample_audit_data):
         """Test adding footer to report."""
         elements = []

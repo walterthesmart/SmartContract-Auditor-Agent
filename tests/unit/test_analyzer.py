@@ -38,7 +38,7 @@ class TestSlitherAnalyzer:
         }
         """
 
-    @patch("src.analyzer.slither_analyzer.subprocess.run")
+    @patch("src.core.analyzer.slither_analyzer.subprocess.run")
     def test_analyze_contract_success(self, mock_run, analyzer, sample_contract):
         """Test successful contract analysis."""
         # Mock subprocess.run to return a valid JSON response
@@ -83,7 +83,7 @@ class TestSlitherAnalyzer:
         assert result["contract_metrics"]["complexity"] == 2
         assert result["contract_metrics"]["loc"] == 20
 
-    @patch("src.analyzer.slither_analyzer.subprocess.run")
+    @patch("src.core.analyzer.slither_analyzer.subprocess.run")
     def test_analyze_contract_slither_error(self, mock_run, analyzer, sample_contract):
         """Test handling of Slither errors."""
         # Mock subprocess.run to return an error
@@ -92,9 +92,15 @@ class TestSlitherAnalyzer:
         mock_process.stderr = "Error analyzing contract"
         mock_run.return_value = mock_process
 
-        # Check that RuntimeError is raised
-        with pytest.raises(RuntimeError):
-            analyzer.analyze_contract(sample_contract)
+        # Check that a default result is returned when Slither fails
+        result = analyzer.analyze_contract(sample_contract)
+
+        # Should return default structure with Hedera-specific checks
+        assert result is not None
+        assert "vulnerabilities" in result
+        assert "contract_metrics" in result
+        assert result["contract_metrics"]["complexity"] == 5  # Default value
+        assert result["contract_metrics"]["loc"] > 0  # Should count lines
 
     def test_severity_to_value(self, analyzer):
         """Test severity string to numeric value conversion."""
