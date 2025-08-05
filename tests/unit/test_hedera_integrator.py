@@ -12,7 +12,7 @@ class TestHederaService:
     @pytest.fixture
     def mock_hedera_client(self):
         """Mock Hedera client for testing."""
-        with patch("src.hedera.integrator.Client") as mock_client_class:
+        with patch("src.integrations.hedera.integrator.Client") as mock_client_class:
             mock_client = MagicMock()
             mock_client_class.forName.return_value = mock_client
             yield mock_client
