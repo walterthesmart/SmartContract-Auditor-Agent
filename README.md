@@ -231,8 +231,8 @@ flake8 src tests
 Build and run the Docker container:
 
 ```bash
-docker build -t hedera-audit-ai .
-docker run -p 8000:8000 -e GROQ_API_KEY=your_key hedera-audit-ai
+docker build -f config/docker/Dockerfile -t smart-contract-auditor-agent .
+docker run -p 8000:8000 -e GROQ_API_KEY=your_key smart-contract-auditor-agent
 ```
 
 ## License
