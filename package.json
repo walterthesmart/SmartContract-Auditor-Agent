@@ -1,0 +1,16 @@
+{
+  "name": "hederaauditai",
+  "version": "1.0.0",
+  "main": "create_topic.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@hashgraph/sdk": "^2.68.0",
+    "dotenv": "^17.2.0"
+  }
+}
