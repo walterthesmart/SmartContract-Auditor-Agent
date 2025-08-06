@@ -4,12 +4,23 @@ An AI-powered auditing tool for Hedera smart contracts with HCS-10 OpenConvAI su
 
 ## 🌟 Features
 
+### Backend (Python/FastAPI)
 - **Smart Contract Analysis**: Static analysis using Slither with custom Hedera rules
 - **AI-Powered Explanations**: LLM-based vulnerability explanations and fix suggestions
 - **Report Generation**: Professional PDF audit reports
 - **Hedera Integration**: File storage and NFT certificate minting
 - **HCS-10 OpenConvAI**: Decentralized AI agent communication protocol
 - **MoonScape Platform**: Integration with MoonScape ecosystem
+
+### Frontend (Next.js/TypeScript)
+- **Modern Web Interface**: Responsive Next.js 14 application with TypeScript
+- **Code Editor**: Monaco Editor with Solidity/Vyper syntax highlighting
+- **Real-time Updates**: Live audit results and progress tracking
+- **File Upload**: Drag & drop contract file upload
+- **Interactive Dashboard**: Comprehensive vulnerability analysis display
+- **Report Management**: PDF generation, preview, and download
+- **NFT Certificates**: Display and manage audit NFT certificates
+- **Mobile Responsive**: Optimized for all device sizes
 
 ## 🌙 **Deploy to MoonScape - Quick Start**
 
@@ -82,13 +93,18 @@ python src/integrations/moonscape/moonscape_integration.py
 
 # 4. Start API server
 python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000
+
+# 5. Set up and start frontend (in a new terminal)
+./setup-frontend.sh  # or setup-frontend.bat on Windows
+cd frontend && npm run dev
 ```
 
 ### **4. Verify Deployment**
 
+- **Frontend**: Visit http://localhost:3000 for the web interface
+- **API**: Check http://localhost:8000/health for backend status
+- **API Documentation**: Visit http://localhost:8000/docs for interactive API docs
 - **Contract**: Visit https://hashscan.io/testnet and search for your contract ID
-- **API**: Check http://localhost:8000/health
-- **Documentation**: Visit http://localhost:8000/docs
 
 ## 📊 What Gets Deployed
 
@@ -99,6 +115,16 @@ python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000
 ✅ **File Storage** - Audit reports stored on Hedera File Service
 
 ## 🚀 Usage After Deployment
+
+### **Frontend Application**
+The modern web interface is available at `http://localhost:3000` (development) and provides:
+
+- **Smart Contract Editor**: Upload or paste contract code with syntax highlighting
+- **Security Analysis**: Run comprehensive security audits with real-time results
+- **Vulnerability Dashboard**: Interactive display of security findings and recommendations
+- **Report Generation**: Create and download professional PDF audit reports
+- **NFT Certificates**: View and manage blockchain-verified audit certificates
+- **Tutorial & Resources**: Built-in guidance and learning materials
 
 ### **API Endpoints**
 - `POST /analyze` - Analyze smart contract code
