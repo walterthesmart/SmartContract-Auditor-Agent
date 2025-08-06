@@ -1,20 +1,21 @@
 import { forwardRef } from 'react';
 import { Loader2 } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 import type { ButtonProps } from '@/types/ui';
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ 
-    variant = 'primary', 
-    size = 'md', 
-    loading = false, 
-    disabled = false, 
-    children, 
-    className, 
+  ({
+    variant = 'primary',
+    size = 'md',
+    loading = false,
+    disabled = false,
+    children,
+    className,
     type = 'button',
     onClick,
-    ...props 
-  }, ref) => {
+    ...props
+  }, ref): JSX.Element => {
     const baseClasses = 'btn';
     
     const variantClasses = {

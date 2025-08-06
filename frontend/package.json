@@ -11,7 +11,9 @@
     "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky install",
+    "pre-commit": "npm run type-check && npm run lint && npm run format:check"
   },
   "dependencies": {
     "next": "^14.0.0",
@@ -44,7 +46,9 @@
     "postcss": "^8.4.0",
     "autoprefixer": "^10.4.0",
     "@tailwindcss/forms": "^0.5.0",
-    "@tailwindcss/typography": "^0.5.0"
+    "@tailwindcss/typography": "^0.5.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.0.0"
   },
   "engines": {
     "node": ">=18.0.0",
