@@ -8,7 +8,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { auditService } from '@/services/api';
 import type { AuditResult } from '@/types/audit';
 
-export function ReportPreview() {
+export function ReportPreview(): JSX.Element {
   const [auditResult, setAuditResult] = useState<AuditResult | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [reportUrl, setReportUrl] = useState<string | null>(null);
@@ -26,7 +26,7 @@ export function ReportPreview() {
     };
   }, []);
 
-  const generateReport = async () => {
+  const generateReport = async (): Promise<void> => {
     if (!auditResult) return;
 
     setIsGenerating(true);
@@ -70,13 +70,13 @@ export function ReportPreview() {
     }
   };
 
-  const downloadReport = () => {
+  const downloadReport = (): void => {
     if (reportUrl) {
       window.open(reportUrl, '_blank');
     }
   };
 
-  const previewReport = () => {
+  const previewReport = (): void => {
     if (reportUrl) {
       window.open(reportUrl, '_blank');
     }

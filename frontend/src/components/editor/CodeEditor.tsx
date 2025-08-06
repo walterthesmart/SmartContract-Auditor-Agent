@@ -6,7 +6,7 @@ import { Editor } from '@monaco-editor/react';
 import { Upload, Play, FileText, Code } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { cn, formatFileSize } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { useAudit } from '@/hooks/useAudit';
 import type { EditorState } from '@/types/ui';
 
@@ -45,7 +45,7 @@ contract ExampleContract {
     }
 }`;
 
-export function CodeEditor() {
+export function CodeEditor(): JSX.Element {
   const [editorState, setEditorState] = useState<EditorState>({
     code: EXAMPLE_CONTRACT,
     language: 'solidity',
@@ -220,56 +220,31 @@ export function CodeEditor() {
             },
             parameterHints: { enabled: true },
             hover: { enabled: true },
-            lightbulb: { enabled: true },
             // Vulnerability highlighting
             renderLineHighlight: 'gutter',
             renderWhitespace: 'selection',
           }}
           onMount={(editor, monaco) => {
-            // Add custom Solidity snippets
-            monaco.languages.registerCompletionItemProvider('sol', {
-              provideCompletionItems: () => ({
-                suggestions: [
-                  {
-                    label: 'contract',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: 'contract ${1:ContractName} {\n\t$0\n}',
-                    insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                    documentation: 'Create a new contract',
-                  },
-                  {
-                    label: 'function',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: 'function ${1:functionName}(${2:params}) ${3:public} ${4:returns (${5:returnType})} {\n\t$0\n}',
-                    insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                    documentation: 'Create a new function',
-                  },
-                  {
-                    label: 'modifier',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: 'modifier ${1:modifierName}(${2:params}) {\n\t${3:require(condition, "error message");}\n\t_;\n}',
-                    insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                    documentation: 'Create a new modifier',
-                  },
-                ],
-              }),
-            });
-
             // Add vulnerability markers when audit completes
-            const handleAuditComplete = (event: CustomEvent) => {
+            const handleAuditComplete = (event: CustomEvent): void => {
               const result = event.detail;
-              const markers = result.vulnerabilities.map((vuln: any) => ({
-                startLineNumber: vuln.location.line,
-                startColumn: 1,
-                endLineNumber: vuln.location.line,
-                endColumn: 1000,
-                message: `${vuln.severity.toUpperCase()}: ${vuln.title}`,
-                severity: vuln.severity === 'critical' ? monaco.MarkerSeverity.Error :
-                         vuln.severity === 'high' ? monaco.MarkerSeverity.Error :
-                         vuln.severity === 'medium' ? monaco.MarkerSeverity.Warning :
-                         monaco.MarkerSeverity.Info,
-              }));
-              monaco.editor.setModelMarkers(editor.getModel()!, 'audit', markers);
+              if (result?.vulnerabilities) {
+                const markers = result.vulnerabilities.map((vuln: { location: { line: number }; severity: string; title: string }) => ({
+                  startLineNumber: vuln.location.line,
+                  startColumn: 1,
+                  endLineNumber: vuln.location.line,
+                  endColumn: 1000,
+                  message: `${vuln.severity.toUpperCase()}: ${vuln.title}`,
+                  severity: vuln.severity === 'critical' ? monaco.MarkerSeverity.Error :
+                           vuln.severity === 'high' ? monaco.MarkerSeverity.Error :
+                           vuln.severity === 'medium' ? monaco.MarkerSeverity.Warning :
+                           monaco.MarkerSeverity.Info,
+                }));
+                const model = editor.getModel();
+                if (model) {
+                  monaco.editor.setModelMarkers(model, 'audit', markers);
+                }
+              }
             };
 
             window.addEventListener('auditComplete', handleAuditComplete as EventListener);

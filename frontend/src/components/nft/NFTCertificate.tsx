@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { truncateAddress, formatDate } from '@/lib/utils';
 import type { AuditResult } from '@/types/audit';
 
-export function NFTCertificate() {
+export function NFTCertificate(): JSX.Element {
   const [auditResult, setAuditResult] = useState<AuditResult | null>(null);
   const [nftId, setNftId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -34,7 +34,7 @@ export function NFTCertificate() {
     };
   }, []);
 
-  const copyToClipboard = async (text: string) => {
+  const copyToClipboard = async (text: string): Promise<void> => {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
@@ -44,7 +44,7 @@ export function NFTCertificate() {
     }
   };
 
-  const viewOnHashscan = () => {
+  const viewOnHashscan = (): void => {
     if (nftId) {
       const network = process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet';
       window.open(`https://hashscan.io/${network}/token/${nftId}`, '_blank');

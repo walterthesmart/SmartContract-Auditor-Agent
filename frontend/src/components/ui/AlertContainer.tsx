@@ -19,7 +19,7 @@ const alertStyles = {
   info: 'border-blue-500/30 bg-blue-900/20 text-blue-300',
 };
 
-export function AlertContainer() {
+export function AlertContainer(): JSX.Element | null {
   const [alerts, setAlerts] = useState<AlertProps[]>([]);
 
   const removeAlert = (id: string) => {

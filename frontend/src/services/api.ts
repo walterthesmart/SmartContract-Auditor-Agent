@@ -23,7 +23,7 @@ const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000;
 
 // Retry logic for failed requests
-const retryRequest = async (config: AxiosRequestConfig, retryCount = 0): Promise<any> => {
+const retryRequest = async (config: AxiosRequestConfig, retryCount = 0): Promise<unknown> => {
   try {
     return await api(config);
   } catch (error) {
@@ -140,7 +140,7 @@ export const auditService = {
   },
 
   // Upload contract file
-  async uploadContract(file: File, contractName: string, language: string) {
+  async uploadContract(file: File, contractName: string, language: string): Promise<unknown> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('contract_name', contractName);
@@ -169,13 +169,13 @@ export const moonscapeService = {
   },
 
   // Get agent registry info
-  async getRegistryInfo() {
+  async getRegistryInfo(): Promise<unknown> {
     const response = await api.get('/moonscape/registry');
     return response.data;
   },
 
   // Get active connections
-  async getConnections() {
+  async getConnections(): Promise<unknown> {
     const response = await api.get('/moonscape/connections');
     return response.data;
   },

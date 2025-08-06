@@ -50,12 +50,12 @@ const resources = [
   },
 ];
 
-export function TutorialSection() {
-  const openResource = (url: string) => {
+export function TutorialSection(): JSX.Element {
+  const openResource = (url: string): void => {
     window.open(url, '_blank');
   };
 
-  const startTutorial = () => {
+  const startTutorial = (): void => {
     if (typeof window !== 'undefined' && (window as any).showAlert) {
       (window as any).showAlert({
         type: 'info',

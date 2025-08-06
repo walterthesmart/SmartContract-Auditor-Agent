@@ -6,8 +6,8 @@ import { Menu, X, Shield, FileText, Award, BookOpen, ExternalLink } from 'lucide
 import { cn } from '@/lib/utils';
 
 interface NavbarProps {
-  activeSection: string;
-  onSectionChange: (section: string) => void;
+  readonly activeSection: string;
+  readonly onSectionChange: (section: string) => void;
 }
 
 const navigationItems = [
@@ -17,7 +17,7 @@ const navigationItems = [
   { id: 'tutorial', label: 'Tutorial', icon: BookOpen },
 ];
 
-export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
+export function Navbar({ activeSection, onSectionChange }: NavbarProps): JSX.Element {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -29,8 +29,8 @@ export function Navbar({ activeSection, onSectionChange }: NavbarProps) {
     setIsMobileMenuOpen(false);
   };
 
-  const openApiDocs = () => {
-    window.open(`${process.env.NEXT_PUBLIC_API_URL}/docs`, '_blank');
+  const openApiDocs = (): void => {
+    window.open(`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'}/docs`, '_blank');
   };
 
   return (

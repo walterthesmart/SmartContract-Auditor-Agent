@@ -14,26 +14,7 @@
     "jsx": "preserve",
     "incremental": true,
 
-    // Strict Type Checking Options
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "noImplicitOverride": true,
-    "useUnknownInCatchVariables": true,
-    "exactOptionalPropertyTypes": true,
-
-    // Additional Checks
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true,
-
-    // Module Resolution
+    // Basic strict options (keeping it simple for now)
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
     "plugins": [

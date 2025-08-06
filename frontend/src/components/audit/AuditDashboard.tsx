@@ -10,7 +10,7 @@ import { VulnerabilityList } from './VulnerabilityList';
 import { getAuditStatus } from '@/lib/utils';
 import type { AuditResult } from '@/types/audit';
 
-export function AuditDashboard() {
+export function AuditDashboard(): JSX.Element {
   const [auditResult, setAuditResult] = useState<AuditResult | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -25,7 +25,7 @@ export function AuditDashboard() {
     };
   }, []);
 
-  const handleRefresh = async () => {
+  const handleRefresh = async (): Promise<void> => {
     setIsRefreshing(true);
     // Simulate refresh delay
     setTimeout(() => {
@@ -33,7 +33,7 @@ export function AuditDashboard() {
     }, 1000);
   };
 
-  const handleExport = () => {
+  const handleExport = (): void => {
     if (!auditResult) return;
 
     const exportData = {

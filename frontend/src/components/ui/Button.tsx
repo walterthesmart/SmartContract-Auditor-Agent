@@ -15,7 +15,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     type = 'button',
     onClick,
     ...props
-  }, ref): JSX.Element => {
+  }, ref) => {
     const baseClasses = 'btn';
     
     const variantClasses = {

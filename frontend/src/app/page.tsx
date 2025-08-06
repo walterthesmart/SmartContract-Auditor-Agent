@@ -9,7 +9,7 @@ import { NFTCertificate } from '@/components/nft/NFTCertificate';
 import { TutorialSection } from '@/components/tutorial/TutorialSection';
 import { AlertContainer } from '@/components/ui/AlertContainer';
 
-export default function HomePage() {
+export default function HomePage(): JSX.Element {
   const [activeSection, setActiveSection] = useState('dashboard');
 
   return (

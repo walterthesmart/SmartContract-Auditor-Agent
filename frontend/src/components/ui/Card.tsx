@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import type { CardProps } from '@/types/ui';
 
-export function Card({ title, icon, actions, children, className }: CardProps) {
+export function Card({ title, icon, actions, children, className }: CardProps): JSX.Element {
   return (
     <div className={cn('card', className)}>
       {(title || icon || actions) && (

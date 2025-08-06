@@ -13,7 +13,7 @@ interface ResponsiveLayoutProps {
 }
 
 export function ResponsiveLayout({ navbar, sidebar, children }: ResponsiveLayoutProps) {
-  const { isMobile, isTablet, isDesktop } = useResponsive();
+  const { isMobile, isTablet } = useResponsive();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
