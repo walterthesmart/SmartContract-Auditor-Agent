@@ -18,7 +18,7 @@ TypeScript path mappings (`@/lib/utils`) were not being resolved correctly in Ve
    ```
 
 2. **Module Resolution Issue**: Fixed by configuring Vercel for monorepo structure:
-   - Added `vercel.json` with `rootDirectory: "frontend"` to tell Vercel where the Next.js app is located
+   - Added `vercel.json` with custom build commands to build from the frontend directory
    - Kept absolute imports (`@/lib/utils`) as they work correctly with proper TypeScript configuration
    - This ensures imports work correctly in all build environments
 
@@ -34,13 +34,10 @@ For production deployment, you'll need to set these environment variables in Ver
 1. **Ensure vercel.json is configured** (already done):
    ```json
    {
-     "$schema": "https://openapi.vercel.sh/vercel.json",
      "version": 2,
      "buildCommand": "cd frontend && npm ci && npm run build",
      "outputDirectory": "frontend/.next",
-     "installCommand": "cd frontend && npm ci",
-     "framework": "nextjs",
-     "rootDirectory": "frontend"
+     "installCommand": "cd frontend && npm ci"
    }
    ```
 
@@ -76,4 +73,4 @@ If you still encounter issues:
 - Ensure all dependencies are properly listed in `package.json`
 - Verify environment variables are set correctly in Vercel dashboard
 - If you see "Module not found" errors, check that TypeScript path mappings are configured correctly in tsconfig.json
-- For monorepo deployments, ensure `vercel.json` has the correct `rootDirectory` setting
+- For monorepo deployments, ensure `vercel.json` has the correct build commands that navigate to the frontend directory
