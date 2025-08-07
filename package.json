@@ -1,0 +1,25 @@
+{
+  "name": "hederaauditai",
+  "version": "1.0.0",
+  "main": "create_topic.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd frontend && npm start",
+    "dev": "cd frontend && npm run dev",
+    "frontend:dev": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "frontend:start": "cd frontend && npm run start",
+    "frontend:install": "cd frontend && npm install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@hashgraph/sdk": "^2.69.0",
+    "@openzeppelin/contracts": "^5.4.0",
+    "dotenv": "^17.2.0",
+    "solc": "^0.8.20"
+  }
+}
