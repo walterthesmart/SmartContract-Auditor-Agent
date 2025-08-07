@@ -17,9 +17,9 @@ TypeScript path mappings (`@/lib/utils`) were not being resolved correctly in Ve
    "prepare": "node -e \"if (process.env.CI !== 'true') { try { require('husky').install() } catch (e) {} }\""
    ```
 
-2. **Module Resolution Issue**: Fixed by configuring Vercel for monorepo structure:
+2. **Module Resolution Issue**: Fixed by using relative imports and configuring Vercel for monorepo structure:
    - Added `vercel.json` with custom build commands to build from the frontend directory
-   - Kept absolute imports (`@/lib/utils`) as they work correctly with proper TypeScript configuration
+   - Changed absolute imports (`@/lib/utils`) to relative imports (`../../lib/utils`) for Vercel compatibility
    - This ensures imports work correctly in all build environments
 
 3. **Package Lock Issue**: Fixed missing `package-lock.json` in deployment:
@@ -76,5 +76,5 @@ If you still encounter issues:
 - Check Vercel build logs for specific errors
 - Ensure all dependencies are properly listed in `package.json`
 - Verify environment variables are set correctly in Vercel dashboard
-- If you see "Module not found" errors, check that TypeScript path mappings are configured correctly in tsconfig.json
+- If you see "Module not found" errors, check that all imports use relative paths instead of TypeScript path mappings for Vercel compatibility
 - For monorepo deployments, ensure `vercel.json` has the correct build commands that navigate to the frontend directory
