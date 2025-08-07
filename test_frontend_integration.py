@@ -53,7 +53,7 @@ contract SimpleStorage {
     try:
         # Make API call
         response = requests.post(
-            "http://localhost:8000/analyze",
+            "http://localhost:8001/analyze",
             json=audit_request,
             headers={"Content-Type": "application/json"}
         )

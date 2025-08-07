@@ -203,9 +203,13 @@ class SlitherAnalyzer:
                 "id": vuln_id,
                 "title": detector.get("check", "Unknown"),
                 "description": detector.get("description", "No description"),
-                "severity": detector.get("impact", "Medium"),
+                "severity": detector.get("impact", "Medium").lower(),
                 "severity_level_value": self._severity_to_value(detector.get("impact", "Medium")),
-                "line": line,
+                "location": {
+                    "line": line,
+                    "column": None,
+                    "function": element.get("name") if elements else None
+                },
                 "code_snippet": code_snippet,
                 "cwe": detector.get("cwe", [])
             }
@@ -256,9 +260,13 @@ class SlitherAnalyzer:
                 "id": "HED-001",
                 "title": "Missing Token Association",
                 "description": "Contract doesn't implement token association logic which is required for HTS tokens",
-                "severity": "Medium",
+                "severity": "medium",
                 "severity_level_value": 2,
-                "line": 0,
+                "location": {
+                    "line": 0,
+                    "column": None,
+                    "function": None
+                },
                 "cwe": ["CWE-362"]
             })
         
@@ -268,9 +276,13 @@ class SlitherAnalyzer:
                 "id": "HED-002",
                 "title": "Unsafe HBAR Handling",
                 "description": "Payable function without HBAR amount validation could lead to unexpected behavior",
-                "severity": "High",
+                "severity": "high",
                 "severity_level_value": 3,
-                "line": 0,
+                "location": {
+                    "line": 0,
+                    "column": None,
+                    "function": None
+                },
                 "cwe": ["CWE-840"]
             })
         
@@ -280,9 +292,13 @@ class SlitherAnalyzer:
                 "id": "HED-003",
                 "title": "Improper Timestamp Usage",
                 "description": "Using block.timestamp instead of Hedera's ConsensusTimestamp may lead to inconsistencies",
-                "severity": "Medium",
+                "severity": "medium",
                 "severity_level_value": 2,
-                "line": 0,
+                "location": {
+                    "line": 0,
+                    "column": None,
+                    "function": None
+                },
                 "cwe": ["CWE-829"]
             })
         

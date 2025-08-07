@@ -37,8 +37,9 @@ try:
     uvicorn.run(
         app,
         host="0.0.0.0",
-        port=8000,
-        log_level="info"
+        port=8001,
+        log_level="info",
+        reload=False
     )
     
 except Exception as e:
