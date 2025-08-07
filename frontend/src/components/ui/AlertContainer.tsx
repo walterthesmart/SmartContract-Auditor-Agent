@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { X, CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { AlertProps } from '@/types/ui';
@@ -26,10 +26,10 @@ export function AlertContainer(): JSX.Element | null {
     setAlerts(prev => prev.filter(alert => alert.id !== id));
   };
 
-  const addAlert = (alert: Omit<AlertProps, 'id'>) => {
+  const addAlert = useCallback((alert: Omit<AlertProps, 'id'>) => {
     const id = Math.random().toString(36).substr(2, 9);
     const newAlert = { ...alert, id };
-    
+
     setAlerts(prev => [...prev, newAlert]);
 
     if (alert.duration !== 0) {
@@ -37,15 +37,15 @@ export function AlertContainer(): JSX.Element | null {
         removeAlert(id);
       }, alert.duration || 5000);
     }
-  };
+  }, []);
 
   // Global alert function
   useEffect(() => {
-    (window as any).showAlert = addAlert;
+    (window as unknown as { showAlert?: typeof addAlert }).showAlert = addAlert;
     return () => {
-      delete (window as any).showAlert;
+      delete (window as unknown as { showAlert?: typeof addAlert }).showAlert;
     };
-  }, []);
+  }, [addAlert]);
 
   if (alerts.length === 0) {
     return null;

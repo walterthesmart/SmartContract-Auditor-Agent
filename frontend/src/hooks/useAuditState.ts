@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useCallback, useEffect, useReducer } from 'react';
-import type { 
-  AuditResult, 
-  AuditSession, 
-  AuditStatus, 
+import { useCallback, useEffect, useReducer } from 'react';
+import type {
+  AuditResult,
+  AuditSession,
   ContractMetadata,
-  AuditConfig 
+  AuditConfig
 } from '@/types/audit';
 
 // State interface

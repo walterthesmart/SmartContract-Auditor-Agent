@@ -144,7 +144,7 @@ export function useTouchDevice(): boolean {
       setIsTouchDevice(
         'ontouchstart' in window ||
         navigator.maxTouchPoints > 0 ||
-        // @ts-ignore
+        // @ts-expect-error - msMaxTouchPoints is a legacy IE property
         navigator.msMaxTouchPoints > 0
       );
     };

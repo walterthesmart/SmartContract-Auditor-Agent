@@ -23,8 +23,8 @@ export function useAudit(): UseAuditReturn {
 
     try {
       // Show loading message
-      if (typeof window !== 'undefined' && (window as any).showAlert) {
-        (window as any).showAlert({
+      if (typeof window !== 'undefined' && (window as unknown as { showAlert?: (alert: { type: string; message: string; duration: number }) => void }).showAlert) {
+        (window as unknown as { showAlert: (alert: { type: string; message: string; duration: number }) => void }).showAlert({
           type: 'info',
           message: 'Starting security audit analysis...',
           duration: 3000,
@@ -35,8 +35,8 @@ export function useAudit(): UseAuditReturn {
       setAuditResult(result);
 
       // Show success message
-      if (typeof window !== 'undefined' && (window as any).showAlert) {
-        (window as any).showAlert({
+      if (typeof window !== 'undefined' && (window as unknown as { showAlert?: (alert: { type: string; title: string; message: string }) => void }).showAlert) {
+        (window as unknown as { showAlert: (alert: { type: string; title: string; message: string }) => void }).showAlert({
           type: 'success',
           title: 'Audit Complete',
           message: `Found ${result.vulnerabilities.length} issues. Score: ${result.audit_score}/100`,

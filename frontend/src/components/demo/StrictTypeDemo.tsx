@@ -136,7 +136,7 @@ export function StrictTypeDemo({
       warning: 0,
       error: 0,
       info: 0,
-    } as const;
+    };
 
     for (const item of validItems) {
       switch (item.type) {

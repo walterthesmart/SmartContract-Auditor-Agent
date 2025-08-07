@@ -54,8 +54,8 @@ export function ReportPreview(): JSX.Element {
       setProgress(100);
       setReportUrl(response.view_url);
 
-      if (typeof window !== 'undefined' && (window as any).showAlert) {
-        (window as any).showAlert({
+      if (typeof window !== 'undefined' && (window as unknown as { showAlert?: (alert: { type: string; title: string; message: string }) => void }).showAlert) {
+        (window as unknown as { showAlert: (alert: { type: string; title: string; message: string }) => void }).showAlert({
           type: 'success',
           title: 'Report Generated',
           message: 'PDF audit report has been generated successfully.',

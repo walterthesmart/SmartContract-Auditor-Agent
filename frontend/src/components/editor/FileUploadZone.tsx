@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useDropzone, FileRejection } from 'react-dropzone';
 import { Upload, FileText, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { cn, formatFileSize } from '@/lib/utils';
 
@@ -29,12 +29,12 @@ export function FileUploadZone({
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
   const onDrop = useCallback(
-    (acceptedFiles: File[], rejectedFiles: any[]) => {
+    (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
       // Handle rejected files
       rejectedFiles.forEach((rejection) => {
         const error = rejection.errors[0]?.message || 'File rejected';
-        if (typeof window !== 'undefined' && (window as any).showAlert) {
-          (window as any).showAlert({
+        if (typeof window !== 'undefined' && (window as unknown as { showAlert?: (alert: { type: string; title: string; message: string }) => void }).showAlert) {
+          (window as unknown as { showAlert: (alert: { type: string; title: string; message: string }) => void }).showAlert({
             type: 'error',
             title: 'File Upload Error',
             message: `${rejection.file.name}: ${error}`,
@@ -67,8 +67,8 @@ export function FileUploadZone({
 
           onFileUpload(content, file.name);
 
-          if (typeof window !== 'undefined' && (window as any).showAlert) {
-            (window as any).showAlert({
+          if (typeof window !== 'undefined' && (window as unknown as { showAlert?: (alert: { type: string; title: string; message: string }) => void }).showAlert) {
+            (window as unknown as { showAlert: (alert: { type: string; title: string; message: string }) => void }).showAlert({
               type: 'success',
               title: 'File Uploaded',
               message: `${file.name} has been loaded successfully.`,

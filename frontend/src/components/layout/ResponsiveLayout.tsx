@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import { Menu, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useResponsive } from '@/hooks/useResponsive';
 import { cn } from '@/lib/utils';
@@ -39,44 +39,33 @@ export function ResponsiveLayout({ navbar, sidebar, children }: ResponsiveLayout
           </main>
 
           {/* Mobile Sidebar Overlay */}
-          <AnimatePresence>
-            {sidebarOpen && (
-              <>
-                {/* Backdrop */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="absolute inset-0 z-40 bg-black/50"
-                  onClick={() => setSidebarOpen(false)}
-                />
+          {sidebarOpen && (
+            <>
+              {/* Backdrop */}
+              <div
+                className="absolute inset-0 z-40 bg-black/50"
+                onClick={() => setSidebarOpen(false)}
+              />
 
-                {/* Sidebar */}
-                <motion.div
-                  initial={{ x: '100%' }}
-                  animate={{ x: 0 }}
-                  exit={{ x: '100%' }}
-                  transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                  className="absolute right-0 top-0 z-50 h-full w-80 max-w-[80vw] overflow-auto bg-dark-800 shadow-xl"
-                >
-                  {/* Close Button */}
-                  <div className="flex items-center justify-between border-b border-dark-700 p-4">
-                    <h3 className="text-lg font-semibold text-white">Dashboard</h3>
-                    <button
-                      onClick={() => setSidebarOpen(false)}
-                      className="rounded-lg p-2 text-dark-400 hover:bg-dark-700 hover:text-white"
-                    >
-                      <X className="h-5 w-5" />
-                    </button>
-                  </div>
-                  
-                  <div className="p-4">
-                    {sidebar}
-                  </div>
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
+              {/* Sidebar */}
+              <div className="absolute right-0 top-0 z-50 h-full w-80 max-w-[80vw] overflow-auto bg-dark-800 shadow-xl">
+                {/* Close Button */}
+                <div className="flex items-center justify-between border-b border-dark-700 p-4">
+                  <h3 className="text-lg font-semibold text-white">Dashboard</h3>
+                  <button
+                    onClick={() => setSidebarOpen(false)}
+                    className="rounded-lg p-2 text-dark-400 hover:bg-dark-700 hover:text-white"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                <div className="p-4">
+                  {sidebar}
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Mobile Sidebar Toggle */}
           <button
@@ -109,21 +98,13 @@ export function ResponsiveLayout({ navbar, sidebar, children }: ResponsiveLayout
           </main>
 
           {/* Tablet Sidebar */}
-          <AnimatePresence>
-            {sidebarOpen && (
-              <motion.aside
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 384, opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className="border-l border-dark-700 bg-dark-800/50 backdrop-blur-sm overflow-hidden"
-              >
-                <div className="h-full overflow-auto p-6">
-                  {sidebar}
-                </div>
-              </motion.aside>
-            )}
-          </AnimatePresence>
+          {sidebarOpen && (
+            <aside className="w-96 border-l border-dark-700 bg-dark-800/50 backdrop-blur-sm overflow-hidden">
+              <div className="h-full overflow-auto p-6">
+                {sidebar}
+              </div>
+            </aside>
+          )}
 
           {/* Tablet Sidebar Toggle */}
           <button
@@ -162,12 +143,11 @@ export function ResponsiveLayout({ navbar, sidebar, children }: ResponsiveLayout
         </main>
 
         {/* Desktop Sidebar */}
-        <motion.aside
-          animate={{
-            width: sidebarCollapsed ? 60 : 384,
-          }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className="border-l border-dark-700 bg-dark-800/30 backdrop-blur-sm"
+        <aside
+          className={cn(
+            "border-l border-dark-700 bg-dark-800/30 backdrop-blur-sm transition-all duration-300",
+            sidebarCollapsed ? "w-16" : "w-96"
+          )}
         >
           {/* Collapse Toggle */}
           <div className="flex items-center justify-between border-b border-dark-700 p-4">
@@ -203,7 +183,7 @@ export function ResponsiveLayout({ navbar, sidebar, children }: ResponsiveLayout
               </div>
             )}
           </div>
-        </motion.aside>
+        </aside>
       </div>
     </div>
   );

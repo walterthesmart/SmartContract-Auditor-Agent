@@ -99,7 +99,7 @@ export function CodeEditor(): JSX.Element {
 
   const handleRunAudit = async () => {
     if (!editorState.code.trim()) {
-      (window as any).showAlert?.({
+      (window as unknown as { showAlert?: (alert: { type: string; message: string }) => void }).showAlert?.({
         type: 'warning',
         message: 'Please enter some contract code to audit.',
       });

@@ -56,8 +56,8 @@ export function TutorialSection(): JSX.Element {
   };
 
   const startTutorial = (): void => {
-    if (typeof window !== 'undefined' && (window as any).showAlert) {
-      (window as any).showAlert({
+    if (typeof window !== 'undefined' && (window as unknown as { showAlert?: (alert: { type: string; title: string; message: string }) => void }).showAlert) {
+      (window as unknown as { showAlert: (alert: { type: string; title: string; message: string }) => void }).showAlert({
         type: 'info',
         title: 'Tutorial Started',
         message: 'Follow the steps below to audit your first smart contract!',

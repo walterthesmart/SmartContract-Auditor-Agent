@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError } from 'axios';
 import type {
   AuditRequest,
   AuditResult,
@@ -18,29 +18,29 @@ const api = axios.create({
   },
 });
 
-// Retry configuration
-const MAX_RETRIES = 3;
-const RETRY_DELAY = 1000;
+// Retry configuration (commented out as currently unused)
+// const MAX_RETRIES = 3;
+// const RETRY_DELAY = 1000;
 
-// Retry logic for failed requests
-const retryRequest = async (config: AxiosRequestConfig, retryCount = 0): Promise<unknown> => {
-  try {
-    return await api(config);
-  } catch (error) {
-    if (retryCount < MAX_RETRIES && shouldRetry(error as AxiosError)) {
-      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * (retryCount + 1)));
-      return retryRequest(config, retryCount + 1);
-    }
-    throw error;
-  }
-};
+// Retry logic for failed requests (currently unused but kept for future implementation)
+// const retryRequest = async (config: AxiosRequestConfig, retryCount = 0): Promise<unknown> => {
+//   try {
+//     return await api(config);
+//   } catch (error) {
+//     if (retryCount < MAX_RETRIES && shouldRetry(error as AxiosError)) {
+//       await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * (retryCount + 1)));
+//       return retryRequest(config, retryCount + 1);
+//     }
+//     throw error;
+//   }
+// };
 
-// Determine if request should be retried
-const shouldRetry = (error: AxiosError): boolean => {
-  if (!error.response) return true; // Network error
-  const status = error.response.status;
-  return status >= 500 || status === 429; // Server errors or rate limiting
-};
+// Determine if request should be retried (commented out as currently unused)
+// const shouldRetry = (error: AxiosError): boolean => {
+//   if (!error.response) return true; // Network error
+//   const status = error.response.status;
+//   return status >= 500 || status === 429; // Server errors or rate limiting
+// };
 
 // Request interceptor
 api.interceptors.request.use(
@@ -66,7 +66,7 @@ api.interceptors.response.use(
     console.error('API Error:', error.response?.data || error.message);
 
     // Enhanced error handling with specific error types
-    if (typeof window !== 'undefined' && (window as any).showAlert) {
+    if (typeof window !== 'undefined' && (window as unknown as { showAlert?: (alert: { type: string; title: string; message: string; duration: number }) => void }).showAlert) {
       let title = 'API Error';
       let message = 'An unexpected error occurred';
       let type: 'error' | 'warning' = 'error';
@@ -77,7 +77,7 @@ api.interceptors.response.use(
         message = 'Unable to connect to the server. Please check your internet connection.';
       } else {
         const status = error.response.status;
-        const data = error.response.data as any;
+        const data = error.response.data as { detail?: string; message?: string };
 
         switch (status) {
           case 400:
@@ -114,7 +114,7 @@ api.interceptors.response.use(
         }
       }
 
-      (window as any).showAlert({
+      (window as unknown as { showAlert: (alert: { type: string; title: string; message: string; duration: number }) => void }).showAlert({
         type,
         title,
         message,
