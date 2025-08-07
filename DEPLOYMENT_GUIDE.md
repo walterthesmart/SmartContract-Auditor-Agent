@@ -17,9 +17,10 @@ TypeScript path mappings (`@/lib/utils`) were not being resolved correctly in Ve
    "prepare": "node -e \"if (process.env.CI !== 'true') { try { require('husky').install() } catch (e) {} }\""
    ```
 
-2. **Module Resolution Issue**: Changed absolute imports to relative imports in components:
-   - `import { cn } from '@/lib/utils'` → `import { cn } from '../../lib/utils'`
-   - This ensures imports work in all build environments
+2. **Module Resolution Issue**: Fixed by configuring Vercel for monorepo structure:
+   - Added `vercel.json` with `rootDirectory: "frontend"` to tell Vercel where the Next.js app is located
+   - Kept absolute imports (`@/lib/utils`) as they work correctly with proper TypeScript configuration
+   - This ensures imports work correctly in all build environments
 
 ### Environment Variables
 
@@ -30,13 +31,28 @@ For production deployment, you'll need to set these environment variables in Ver
 
 ### Deployment Steps
 
-1. **Push your changes** to GitHub
-2. **In Vercel Dashboard**:
+1. **Ensure vercel.json is configured** (already done):
+   ```json
+   {
+     "$schema": "https://openapi.vercel.sh/vercel.json",
+     "version": 2,
+     "buildCommand": "cd frontend && npm ci && npm run build",
+     "outputDirectory": "frontend/.next",
+     "installCommand": "cd frontend && npm ci",
+     "framework": "nextjs",
+     "rootDirectory": "frontend"
+   }
+   ```
+
+2. **Push your changes** to GitHub
+
+3. **In Vercel Dashboard**:
    - Go to your project settings
    - Add environment variables:
      - `NEXT_PUBLIC_API_URL` = `https://your-backend-url.com`
      - `NEXT_PUBLIC_HEDERA_NETWORK` = `testnet`
-3. **Redeploy** the project
+
+4. **Redeploy** the project
 
 ### Backend Deployment
 
@@ -59,5 +75,5 @@ If you still encounter issues:
 - Check Vercel build logs for specific errors
 - Ensure all dependencies are properly listed in `package.json`
 - Verify environment variables are set correctly in Vercel dashboard
-- If you see "Module not found" errors, check that all imports use relative paths instead of TypeScript path mappings
-- For monorepo deployments, ensure Vercel is configured to build from the correct directory
+- If you see "Module not found" errors, check that TypeScript path mappings are configured correctly in tsconfig.json
+- For monorepo deployments, ensure `vercel.json` has the correct `rootDirectory` setting
