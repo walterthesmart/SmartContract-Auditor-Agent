@@ -22,13 +22,6 @@ const nextConfig = {
       net: false,
       tls: false,
     };
-
-    // Ensure path aliases work in build environment
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': require('path').resolve(__dirname, 'src'),
-    };
-
     return config;
   },
 };

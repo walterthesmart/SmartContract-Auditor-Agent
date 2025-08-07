@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Menu, X, Shield, FileText, Award, BookOpen, ExternalLink } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 interface NavbarProps {
   readonly activeSection: string;
