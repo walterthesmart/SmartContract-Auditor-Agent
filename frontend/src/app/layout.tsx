@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Fira_Code } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'react-hot-toast';
@@ -13,13 +13,17 @@ const firaCode = Fira_Code({
   variable: '--font-fira-code',
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#14b8a6',
+};
+
 export const metadata: Metadata = {
   title: 'HederaAuditAI - Smart Contract Security Auditor',
   description: 'AI-powered smart contract auditing tool for Hedera blockchain with HCS-10 OpenConvAI support',
   keywords: ['smart contract', 'audit', 'security', 'Hedera', 'blockchain', 'AI', 'vulnerability detection'],
   authors: [{ name: 'HederaAuditAI' }],
-  viewport: 'width=device-width, initial-scale=1',
-  themeColor: '#14b8a6',
   openGraph: {
     title: 'HederaAuditAI - Smart Contract Security Auditor',
     description: 'AI-powered smart contract auditing tool for Hedera blockchain',
