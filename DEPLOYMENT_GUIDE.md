@@ -22,6 +22,10 @@ TypeScript path mappings (`@/lib/utils`) were not being resolved correctly in Ve
    - Kept absolute imports (`@/lib/utils`) as they work correctly with proper TypeScript configuration
    - This ensures imports work correctly in all build environments
 
+3. **Package Lock Issue**: Fixed missing `package-lock.json` in deployment:
+   - Removed `package-lock.json` from root `.gitignore` to allow frontend lockfile to be committed
+   - Changed from `npm ci` to `npm install` in vercel.json for more robust dependency installation
+
 ### Environment Variables
 
 For production deployment, you'll need to set these environment variables in Vercel:
@@ -35,9 +39,9 @@ For production deployment, you'll need to set these environment variables in Ver
    ```json
    {
      "version": 2,
-     "buildCommand": "cd frontend && npm ci && npm run build",
+     "buildCommand": "cd frontend && npm install && npm run build",
      "outputDirectory": "frontend/.next",
-     "installCommand": "cd frontend && npm ci"
+     "installCommand": "cd frontend && npm install"
    }
    ```
 
