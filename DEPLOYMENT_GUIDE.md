@@ -17,9 +17,9 @@ TypeScript path mappings (`@/lib/utils`) were not being resolved correctly in Ve
    "prepare": "node -e \"if (process.env.CI !== 'true') { try { require('husky').install() } catch (e) {} }\""
    ```
 
-2. **Module Resolution Issue**: Fixed by simplifying the build process:
-   - Added build script to root `package.json` that handles the frontend build process
-   - Simplified `vercel.json` to use the root build command
+2. **Module Resolution Issue**: Fixed by configuring Vercel for Next.js in subdirectory:
+   - Configured `vercel.json` to use `@vercel/next` builder for the frontend subdirectory
+   - Added proper routing to direct requests to the frontend
    - Used absolute imports (`@/lib/utils`) which work correctly with this approach
    - This ensures imports work correctly in all build environments
 
@@ -40,17 +40,18 @@ For production deployment, you'll need to set these environment variables in Ver
    ```json
    {
      "version": 2,
-     "buildCommand": "npm run build",
-     "outputDirectory": "frontend/.next"
-   }
-   ```
-
-   And the root `package.json` has the build script:
-   ```json
-   {
-     "scripts": {
-       "build": "cd frontend && npm install && npm run build"
-     }
+     "builds": [
+       {
+         "src": "frontend/package.json",
+         "use": "@vercel/next"
+       }
+     ],
+     "routes": [
+       {
+         "src": "/(.*)",
+         "dest": "frontend/$1"
+       }
+     ]
    }
    ```
 
