@@ -5,7 +5,7 @@ import { Award, ExternalLink, Copy, Check } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { truncateAddress, formatDate } from '../../lib/utils';
+import { truncateAddress, formatDate } from '@/lib/utils';
 import type { AuditResult } from '@/types/audit';
 
 export function NFTCertificate(): JSX.Element {

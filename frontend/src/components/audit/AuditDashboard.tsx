@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { VulnerabilityList } from './VulnerabilityList';
-import { getAuditStatus } from '../../lib/utils';
+import { getAuditStatus } from '@/lib/utils';
 import type { AuditResult } from '@/types/audit';
 
 export function AuditDashboard(): JSX.Element {
