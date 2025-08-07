@@ -2,7 +2,13 @@
 
 ## Vercel Deployment Fix
 
-The deployment error you encountered was due to Husky (Git hooks tool) trying to install in Vercel's build environment where `.git` directory is not available.
+The deployment errors were due to two main issues:
+
+### Issue 1: Husky Installation
+Husky (Git hooks tool) was trying to install in Vercel's build environment where `.git` directory is not available.
+
+### Issue 2: Module Resolution
+TypeScript path mappings (`@/lib/utils`) were not being resolved correctly in Vercel's build environment.
 
 ### What was fixed:
 
@@ -11,7 +17,9 @@ The deployment error you encountered was due to Husky (Git hooks tool) trying to
    "prepare": "node -e \"if (process.env.CI !== 'true') { try { require('husky').install() } catch (e) {} }\""
    ```
 
-2. **Vercel Configuration**: Added `vercel.json` to properly handle the frontend subdirectory structure.
+2. **Module Resolution Issue**: Changed absolute imports to relative imports in components:
+   - `import { cn } from '@/lib/utils'` → `import { cn } from '../../lib/utils'`
+   - This ensures imports work in all build environments
 
 ### Environment Variables
 
@@ -51,3 +59,5 @@ If you still encounter issues:
 - Check Vercel build logs for specific errors
 - Ensure all dependencies are properly listed in `package.json`
 - Verify environment variables are set correctly in Vercel dashboard
+- If you see "Module not found" errors, check that all imports use relative paths instead of TypeScript path mappings
+- For monorepo deployments, ensure Vercel is configured to build from the correct directory
