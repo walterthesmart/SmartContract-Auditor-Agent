@@ -379,27 +379,32 @@ async def analyze_contract(
         
         # Ensure vulnerabilities is a list
         vulnerabilities = analysis_result.get("vulnerabilities", [])
-        
-        # Step 2: Skip LLM processing for now to test structure
-        # TODO: Re-enable LLM processing once structure is fixed
-        processed_vulnerabilities = vulnerabilities
+
+        # Step 2: Process vulnerabilities with LLM
+        processed_vulnerabilities = []
+
+        try:
+            if vulnerabilities:
+                processed_vulnerabilities = llm_processor.process_vulnerabilities(
+                    vulnerabilities,
+                    request.contract_code
+                )
+                logging.info(f"LLM processing completed with {len(processed_vulnerabilities)} vulnerabilities")
+            else:
+                logging.info("No vulnerabilities to process")
+                processed_vulnerabilities = vulnerabilities
+        except Exception as llm_error:
+            logging.error(f"Error in LLM processing: {str(llm_error)}")
+            # Use the original vulnerabilities if LLM processing fails
+            processed_vulnerabilities = vulnerabilities
         
         # Ensure all vulnerabilities have required fields and proper structure
-        for i, vuln in enumerate(processed_vulnerabilities):
-            print(f"DEBUG: Processing vulnerability {i}: {vuln.get('id')}")
-            print(f"DEBUG: Fields before processing: {list(vuln.keys())}")
-
+        for vuln in processed_vulnerabilities:
             if "severity_level_value" not in vuln:
                 vuln["severity_level_value"] = 2  # Default to Medium
 
-            # Check current structure
-            has_line = "line" in vuln
-            has_location = "location" in vuln
-            print(f"DEBUG: has_line={has_line}, has_location={has_location}")
-
             # Transform to frontend-expected structure
-            if has_line and not has_location:
-                print(f"DEBUG: Transforming vulnerability {vuln.get('id')} - adding location field")
+            if "line" in vuln and "location" not in vuln:
                 vuln["location"] = {
                     "line": vuln.get("line", 0),
                     "column": vuln.get("column"),
@@ -407,20 +412,14 @@ async def analyze_contract(
                 }
                 # Remove the old line field to avoid confusion
                 del vuln["line"]
-                print(f"DEBUG: After transformation: {list(vuln.keys())}")
 
             # Ensure required fields exist
             if "location" not in vuln:
-                print(f"DEBUG: Adding default location for vulnerability {vuln.get('id')}")
                 vuln["location"] = {"line": 0}
 
             # Ensure severity is lowercase for frontend compatibility
             if "severity" in vuln:
                 vuln["severity"] = vuln["severity"].lower()
-
-            print(f"DEBUG: Final fields: {list(vuln.keys())}")
-            print(f"DEBUG: Final vulnerability: {vuln}")
-            print("---")
         
         # Calculate audit score (100 - severity weighted vulnerabilities)
         total_severity = sum(
@@ -444,19 +443,6 @@ async def analyze_contract(
             low_count=severity_counts["low"],
             info_count=severity_counts["info"]
         )
-
-        # Generate unique audit ID
-        audit_id = str(uuid.uuid4())
-
-        # CRITICAL FIX: Transform vulnerabilities to have location field
-        for vuln in processed_vulnerabilities:
-            if "line" in vuln and "location" not in vuln:
-                vuln["location"] = {
-                    "line": vuln["line"],
-                    "column": vuln.get("column"),
-                    "function": vuln.get("function")
-                }
-                del vuln["line"]  # Remove the old field
 
         # Generate unique audit ID
         audit_id = str(uuid.uuid4())
