@@ -17,9 +17,10 @@ TypeScript path mappings (`@/lib/utils`) were not being resolved correctly in Ve
    "prepare": "node -e \"if (process.env.CI !== 'true') { try { require('husky').install() } catch (e) {} }\""
    ```
 
-2. **Module Resolution Issue**: Fixed by using relative imports and configuring Vercel for monorepo structure:
-   - Added `vercel.json` with custom build commands to build from the frontend directory
-   - Changed absolute imports (`@/lib/utils`) to relative imports (`../../lib/utils`) for Vercel compatibility
+2. **Module Resolution Issue**: Fixed by simplifying the build process:
+   - Added build script to root `package.json` that handles the frontend build process
+   - Simplified `vercel.json` to use the root build command
+   - Used absolute imports (`@/lib/utils`) which work correctly with this approach
    - This ensures imports work correctly in all build environments
 
 3. **Package Lock Issue**: Fixed missing `package-lock.json` in deployment:
@@ -39,9 +40,17 @@ For production deployment, you'll need to set these environment variables in Ver
    ```json
    {
      "version": 2,
-     "buildCommand": "cd frontend && npm install && npm run build",
-     "outputDirectory": "frontend/.next",
-     "installCommand": "cd frontend && npm install"
+     "buildCommand": "npm run build",
+     "outputDirectory": "frontend/.next"
+   }
+   ```
+
+   And the root `package.json` has the build script:
+   ```json
+   {
+     "scripts": {
+       "build": "cd frontend && npm install && npm run build"
+     }
    }
    ```
 
@@ -76,5 +85,5 @@ If you still encounter issues:
 - Check Vercel build logs for specific errors
 - Ensure all dependencies are properly listed in `package.json`
 - Verify environment variables are set correctly in Vercel dashboard
-- If you see "Module not found" errors, check that all imports use relative paths instead of TypeScript path mappings for Vercel compatibility
+- If you see "Module not found" errors, check that TypeScript path mappings are configured correctly and the build script is working
 - For monorepo deployments, ensure `vercel.json` has the correct build commands that navigate to the frontend directory
