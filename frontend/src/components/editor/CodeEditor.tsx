@@ -6,7 +6,7 @@ import { Editor } from '@monaco-editor/react';
 import { Upload, Play, FileText, Code } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 import { useAudit } from '@/hooks/useAudit';
 import type { EditorState } from '@/types/ui';
 
