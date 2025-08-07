@@ -19,12 +19,12 @@ export interface Vulnerability {
 }
 
 export interface AuditResult {
-  id: string;
+  id?: string;
   contract_metadata: ContractMetadata;
   audit_score: number;
   vulnerabilities: Vulnerability[];
   passed: boolean;
-  timestamp: string;
+  timestamp?: string;
   gas_analysis?: {
     estimated_gas: number;
     optimization_suggestions: string[];

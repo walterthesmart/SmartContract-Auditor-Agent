@@ -102,7 +102,7 @@ export function NFTCertificate(): JSX.Element {
             <div className="flex justify-between">
               <span className="text-dark-400">Issued:</span>
               <span className="text-white">
-                {formatDate(auditResult.timestamp)}
+                {formatDate(auditResult.timestamp || new Date().toISOString())}
               </span>
             </div>
             <div className="flex items-center justify-between">

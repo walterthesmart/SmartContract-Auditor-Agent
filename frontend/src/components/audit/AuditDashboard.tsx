@@ -146,7 +146,7 @@ export function AuditDashboard(): JSX.Element {
       </div>
 
       {/* Vulnerability Summary */}
-      {auditResult && auditResult.vulnerabilities.length > 0 && (
+      {auditResult && auditResult.vulnerabilities.length > 0 && auditResult.summary && (
         <div className="mb-4">
           <h4 className="mb-2 text-sm font-medium text-dark-300">Issue Breakdown</h4>
           <div className="flex flex-wrap gap-2">

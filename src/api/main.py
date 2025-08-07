@@ -116,11 +116,22 @@ class Vulnerability(BaseModel):
     test_case: Optional[str] = Field(None, description="Test case for the vulnerability")
 
 
+class VulnerabilitySummary(BaseModel):
+    total_issues: int = Field(..., description="Total number of issues found")
+    critical_count: int = Field(default=0, description="Number of critical vulnerabilities")
+    high_count: int = Field(default=0, description="Number of high vulnerabilities")
+    medium_count: int = Field(default=0, description="Number of medium vulnerabilities")
+    low_count: int = Field(default=0, description="Number of low vulnerabilities")
+    info_count: int = Field(default=0, description="Number of info vulnerabilities")
+
 class AuditResponse(BaseModel):
+    id: str = Field(..., description="Unique audit ID")
     contract_metadata: ContractMetadata = Field(..., description="Metadata about the contract")
     vulnerabilities: List[Vulnerability] = Field(default_factory=list, description="List of vulnerabilities found")
     audit_score: int = Field(..., description="Audit score (0-100)")
     passed: bool = Field(..., description="Whether the audit passed (score >= 80)")
+    timestamp: str = Field(..., description="Audit timestamp in ISO format")
+    summary: VulnerabilitySummary = Field(..., description="Summary of vulnerabilities by severity")
 
 
 class ReportRequest(BaseModel):
@@ -378,10 +389,31 @@ async def analyze_contract(
         else:
             processed_vulnerabilities = []
         
-        # Ensure all vulnerabilities have required fields
+        # Ensure all vulnerabilities have required fields and proper structure
         for vuln in processed_vulnerabilities:
             if "severity_level_value" not in vuln:
                 vuln["severity_level_value"] = 2  # Default to Medium
+
+            # Transform to frontend-expected structure
+            if "line" in vuln and "location" not in vuln:
+                logging.info(f"Transforming vulnerability {vuln.get('id')} - adding location field")
+                vuln["location"] = {
+                    "line": vuln.get("line", 0),
+                    "column": vuln.get("column"),
+                    "function": vuln.get("function")
+                }
+                # Remove the old line field to avoid confusion
+                if "line" in vuln:
+                    del vuln["line"]
+
+            # Ensure required fields exist
+            if "location" not in vuln:
+                logging.info(f"Adding default location for vulnerability {vuln.get('id')}")
+                vuln["location"] = {"line": 0}
+
+            # Ensure severity is lowercase for frontend compatibility
+            if "severity" in vuln:
+                vuln["severity"] = vuln["severity"].lower()
         
         # Calculate audit score (100 - severity weighted vulnerabilities)
         total_severity = sum(
@@ -389,12 +421,34 @@ async def analyze_contract(
             for v in processed_vulnerabilities
         )
         audit_score = max(0, min(100, 100 - total_severity))
-        
+
+        # Calculate vulnerability summary
+        severity_counts = {"critical": 0, "high": 0, "medium": 0, "low": 0, "info": 0}
+        for vuln in processed_vulnerabilities:
+            severity = vuln.get("severity", "medium").lower()
+            if severity in severity_counts:
+                severity_counts[severity] += 1
+
+        summary = VulnerabilitySummary(
+            total_issues=len(processed_vulnerabilities),
+            critical_count=severity_counts["critical"],
+            high_count=severity_counts["high"],
+            medium_count=severity_counts["medium"],
+            low_count=severity_counts["low"],
+            info_count=severity_counts["info"]
+        )
+
+        # Generate unique audit ID
+        audit_id = str(uuid.uuid4())
+
         return {
+            "id": audit_id,
             "contract_metadata": contract_metadata,
             "vulnerabilities": processed_vulnerabilities,
             "audit_score": audit_score,
-            "passed": audit_score >= 80
+            "passed": audit_score >= 80,
+            "timestamp": datetime.now().isoformat(),
+            "summary": summary
         }
     
     except Exception as e:
